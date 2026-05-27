@@ -82,13 +82,6 @@ export default function Home() {
 
   return (
     <div className="flex-1 flex flex-col">
-      <header className="border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold tracking-tight">EnvLock</h1>
-          <span className="text-sm text-muted-foreground">🔒 Zero-knowledge</span>
-        </div>
-      </header>
-
       <main className="flex-1 max-w-4xl mx-auto px-4 py-12 w-full">
         <section className="text-center mb-12 space-y-4">
           <Badge variant="outline" className="text-sm">Encrypted .env Manager</Badge>
@@ -213,10 +206,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-      <footer className="border-t py-6 text-center text-sm text-muted-foreground">
-        EnvLock — Encrypted .env Manager
-      </footer>
     </div>
   );
 }

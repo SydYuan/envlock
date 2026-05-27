@@ -1,0 +1,40 @@
+# EnvLock — Encrypted .env Manager
+
+> Zero-knowledge encrypted .env file management for developers and teams.
+
+## Key Features
+
+- Browser-side AES-256-GCM encryption before upload
+- Zero-knowledge architecture: server never sees plaintext secrets
+- Shareable links with decryption key in URL fragment
+- Team sharing with audit log (Pro plan)
+- Version history with rollback (Pro plan)
+
+## Pricing
+
+- Free: 3 vaults, 1 person, 7-day retention
+- Pro: $9/month, unlimited vaults, 2 team seats, 30-day retention
+
+## Technical Details
+
+- Encryption: AES-256-GCM with PBKDF2 key derivation (600,000 iterations)
+- Key exchange: URL fragment (#), never sent to server
+- Stack: Next.js, Prisma, Neon Postgres, Stripe
+
+## Common Use Cases
+
+- Sharing .env files with team members during deployment
+- Storing API keys and secrets for CI/CD pipelines
+- Temporary credential sharing with contractors
+- Documenting environment variables for onboarding
+
+## Links
+
+- Home: https://envlock-two.vercel.app
+- GitHub: https://github.com/SydYuan/envlock
+- Pricing: https://envlock-two.vercel.app/#pricing
+- API: https://envlock-two.vercel.app/api/vaults
+
+## Related Keywords
+
+env file sharing, encrypted env vault, .env manager team, secret management tool, dotenv alternative, developer secrets, zero knowledge secrets, environment variable sharing

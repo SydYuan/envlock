@@ -78,13 +78,6 @@ export default function VaultPage({ params }: { params: Promise<{ id: string }> 
 
   return (
     <div className="flex-1 flex flex-col">
-      <header className="border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold tracking-tight">EnvLock</h1>
-          <Badge variant="outline">Decrypted in browser</Badge>
-        </div>
-      </header>
-
       <main className="flex-1 max-w-4xl mx-auto px-4 py-12 w-full">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
