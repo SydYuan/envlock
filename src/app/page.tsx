@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { encrypt, generatePassword, generateId } from "@/lib/crypto";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +16,29 @@ export default function Home() {
   const [envContent, setEnvContent] = useState("");
   const [vaultName, setVaultName] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+  async function handleCheckout(priceId: string) {
+    setIsCheckingOut(true);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          priceId,
+          successUrl: `${window.location.origin}/?success=true`,
+          cancelUrl: `${window.location.origin}/#pricing`,
+        }),
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+      else toast.error("Checkout failed");
+    } catch {
+      toast.error("Checkout failed");
+    } finally {
+      setIsCheckingOut(false);
+    }
+  }
 
   async function handleCreateVault() {
     if (!envContent.trim()) {
@@ -178,7 +201,13 @@ export default function Home() {
                 <p>✓ Team sharing (2 seats)</p>
                 <p>✓ Audit log</p>
                 <p>✓ 30-day retention</p>
-                <Button className="w-full mt-4">Coming Soon</Button>
+                <Button
+                  className="w-full mt-4"
+                  onClick={() => handleCheckout(process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO ?? "")}
+                  disabled={isCheckingOut}
+                >
+                  {isCheckingOut ? "Opening..." : "Subscribe"}
+                </Button>
               </CardContent>
             </Card>
           </div>
