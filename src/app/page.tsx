@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { encrypt, generatePassword, generateId } from "@/lib/crypto";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,23 +26,15 @@ export default function Home() {
     return new Date(Date.now() + ms).toISOString();
   }
 
-  async function handleCheckout(priceId: string) {
+  async function handleCheckout() {
     setIsCheckingOut(true);
     try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          priceId,
-          successUrl: `${window.location.origin}/?success=true`,
-          cancelUrl: `${window.location.origin}/#pricing`,
-        }),
-      });
-      const data = await res.json();
-      if (data.url) window.location.href = data.url;
-      else toast.error("Checkout failed");
-    } catch {
-      toast.error("Checkout failed");
+      const url = process.env.NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_PRO;
+      if (!url) {
+        toast.error("Checkout not configured yet");
+        return;
+      }
+      window.location.href = url;
     } finally {
       setIsCheckingOut(false);
     }
@@ -226,7 +218,7 @@ export default function Home() {
                 <p>✓ Audit log</p>
                 <Button
                   className="w-full mt-4"
-                  onClick={() => handleCheckout(process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO ?? "")}
+                  onClick={handleCheckout}
                   disabled={isCheckingOut}
                 >
                   {isCheckingOut ? "Opening..." : "Subscribe"}
