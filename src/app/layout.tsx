@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: "EnvLock — Encrypted .env Manager",
   description:
     "Zero-knowledge encrypted .env file management. Share secrets safely with your team.",
+  verification: {
+    google: process.env.GOOGLE_VERIFICATION_CODE,
+  },
 };
 
 export default function RootLayout({
