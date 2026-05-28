@@ -17,6 +17,14 @@ export default function Home() {
   const [vaultName, setVaultName] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [expiresIn, setExpiresIn] = useState("");
+
+  function getExpiresAt(): string | undefined {
+    if (!expiresIn) return undefined;
+    const ms = parseInt(expiresIn);
+    if (!ms) return undefined;
+    return new Date(Date.now() + ms).toISOString();
+  }
 
   async function handleCheckout(priceId: string) {
     setIsCheckingOut(true);
@@ -54,7 +62,14 @@ export default function Home() {
       const res = await fetch("/api/vaults", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: vaultId, encryptedData: encrypted, iv, salt, name: vaultName || undefined }),
+        body: JSON.stringify({
+          id: vaultId,
+          encryptedData: encrypted,
+          iv,
+          salt,
+          name: vaultName || undefined,
+          expiresAt: getExpiresAt(),
+        }),
       });
 
       if (!res.ok) throw new Error("Failed to save vault");
@@ -111,6 +126,21 @@ export default function Home() {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="expiry">Expires</Label>
+              <select
+                id="expiry"
+                className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                value={expiresIn}
+                onChange={(e) => setExpiresIn(e.target.value)}
+              >
+                <option value="">Never</option>
+                <option value="86400000">24 hours</option>
+                <option value="604800000">7 days</option>
+                <option value="2592000000">30 days (Pro)</option>
+              </select>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="env">.env content</Label>
               <div className="relative">
                 <textarea
@@ -162,7 +192,7 @@ export default function Home() {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">⏱️ Auto-Expiry</CardTitle>
-              <CardDescription>Set expiration time so secrets self-destruct. Coming soon.</CardDescription>
+              <CardDescription>Set expiration time so secrets self-destruct after 24h, 7d, or 30d.</CardDescription>
             </CardHeader>
           </Card>
         </section>
@@ -180,7 +210,7 @@ export default function Home() {
               <CardContent className="space-y-2 text-sm">
                 <p>✓ 3 vaults</p>
                 <p>✓ 1 person</p>
-                <p>✓ 7-day retention</p>
+                <p>✓ Max 7-day expiry</p>
               </CardContent>
             </Card>
             <Card className="relative border-primary">
@@ -192,8 +222,8 @@ export default function Home() {
               <CardContent className="space-y-2 text-sm">
                 <p>✓ Unlimited vaults</p>
                 <p>✓ Team sharing (2 seats)</p>
+                <p>✓ Up to 30-day expiry</p>
                 <p>✓ Audit log</p>
-                <p>✓ 30-day retention</p>
                 <Button
                   className="w-full mt-4"
                   onClick={() => handleCheckout(process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO ?? "")}
