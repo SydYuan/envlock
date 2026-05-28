@@ -16,7 +16,6 @@ export default function Home() {
   const [envContent, setEnvContent] = useState("");
   const [vaultName, setVaultName] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [expiresIn, setExpiresIn] = useState("");
 
   function getExpiresAt(): string | undefined {
@@ -27,17 +26,12 @@ export default function Home() {
   }
 
   async function handleCheckout() {
-    setIsCheckingOut(true);
-    try {
-      const url = process.env.NEXT_PUBLIC_LEMONSQUEEZY_CHECKOUT_PRO;
-      if (!url) {
-        toast.error("Checkout not configured yet");
-        return;
-      }
-      window.location.href = url;
-    } finally {
-      setIsCheckingOut(false);
+    const url = process.env.NEXT_PUBLIC_PAYHIP_CHECKOUT_PRO;
+    if (!url) {
+      toast.error("Checkout not configured yet");
+      return;
     }
+    window.open(url, "_blank");
   }
 
   async function handleCreateVault() {
@@ -216,12 +210,11 @@ export default function Home() {
                 <p>✓ Team sharing (2 seats)</p>
                 <p>✓ Up to 30-day expiry</p>
                 <p>✓ Audit log</p>
-                <Button
+              <Button
                   className="w-full mt-4"
                   onClick={handleCheckout}
-                  disabled={isCheckingOut}
                 >
-                  {isCheckingOut ? "Opening..." : "Subscribe"}
+                  Buy Pro
                 </Button>
               </CardContent>
             </Card>
